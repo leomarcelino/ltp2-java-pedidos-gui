@@ -165,7 +165,7 @@ public class ClienteListFrame extends JInternalFrame implements ActionListener {
 		tableModel.addRow(new Object[] {
 			cliente.getId(),
 			cliente.getNome(),
-			cliente.getTipo(),
+			cliente.getTipoPessoa(),
 			cliente.getCnpjCpf()
 		});
 	}

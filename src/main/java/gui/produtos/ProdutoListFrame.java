@@ -216,8 +216,20 @@ public class ProdutoListFrame extends JInternalFrame implements ActionListener {
 		
 		SwingUtilities.invokeLater(r);		
 	}
+	
+	public long getId(int row) {
+		if (row > -1 && row < getTableRowCount()) {
+			return (Long)table.getValueAt(row, 0);
+		}
+		
+		return -1L;
+	}
 
 	public int getSelectedRowIndex() {
-		return table.getSelectedRow();
+		return table.getSelectedRow(); 
+	}
+	
+	public int getTableRowCount() {
+		return table.getRowCount();
 	}
 }

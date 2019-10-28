@@ -155,7 +155,7 @@ public class ClienteFormFrame extends JInternalFrame implements ActionListener {
 		}
 		
 		cliente.setNome(nomeField.getText());
-		cliente.setTipo((TipoPessoa)tipoPessoaCombo.getSelectedItem());
+		cliente.setTipoPessoa((TipoPessoa)tipoPessoaCombo.getSelectedItem());
 		cliente.setCnpjCpf(cnpjCpfField.getText());
 		
 		presenter.save(cliente);
@@ -167,7 +167,7 @@ public class ClienteFormFrame extends JInternalFrame implements ActionListener {
 		}
 		
 		nomeField.setText(cliente.getNome());
-		tipoPessoaCombo.setSelectedItem(cliente.getTipo());
+		tipoPessoaCombo.setSelectedItem(cliente.getTipoPessoa());
 		cnpjCpfField.setText(cliente.getCnpjCpf());
 	}
 	

@@ -3,8 +3,8 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>br.edu.unifeob</groupId>
-	<artifactId>pedido-gui</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<artifactId>pedidos-gui</artifactId>
+	<version>1.0.0</version>
 
 	<properties>
 		<maven.compiler.source>1.8</maven.compiler.source>
@@ -17,6 +17,12 @@
 		    <groupId>com.jgoodies</groupId>
 		    <artifactId>jgoodies-forms</artifactId>
 		    <version>1.9.0</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>br.edu.unifeob</groupId>
+			<artifactId>pedidos-domain</artifactId>
+			<version>1.0.0</version>
 		</dependency>
 	</dependencies>
 </project>

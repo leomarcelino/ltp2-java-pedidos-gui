@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.swing.JOptionPane;
 
+import dao.ProdutoDAO;
 import gui.produtos.ProdutoFormFrame;
 import gui.produtos.ProdutoListFrame;
 import models.Produto;
@@ -16,16 +17,12 @@ public class ProdutoPresenter implements Presenter {
 	private ProdutoListFrame listView;
 	private ProdutoFormFrame formView;
 	
-	List<Produto> produtos = new ArrayList<>();
+	private ProdutoDAO dao;
 
 	public ProdutoPresenter(AppPresenter appPresenter) {
 		this.appPresenter = appPresenter;
 		
-		produtos = new ArrayList<>();
-		
-		produtos.add(new Produto(1L, "MONITOR", 899.9, 10.0));
-		produtos.add(new Produto(2L, "TECLADO", 39.9, 20.0));
-		produtos.add(new Produto(3L, "MOUSE", 19.9, 30.0));
+		this.dao = new ProdutoDAO();
 		
 		initComponents();
 	}
@@ -46,31 +43,49 @@ public class ProdutoPresenter implements Presenter {
 
 	public void openFormOnEditMode() {
 		int r = listView.getSelectedRowIndex();
-		
-		if (r < 0 || r > produtos.size()) {
+
+		if (r < 0 || r > listView.getTableRowCount()) {
 			JOptionPane.showMessageDialog(listView, "Nenhum registro selecionado!");
 			return;
 		}
 
-		Produto produto = produtos.get(r);
+		long id = listView.getId(r);
+
+		Produto produto = dao.find(id);
+		
+		if (produto == null) {
+			JOptionPane.showMessageDialog(listView, "Registro não encontrado!");
+			return;
+		}
+		
 		openForm(produto);
 	}
 
 	public void delete() {
 		int r = listView.getSelectedRowIndex();
 		
-		if (r < 0 || r > produtos.size()) {
+		if (r < 0 || r > listView.getTableRowCount()) {
 			JOptionPane.showMessageDialog(listView, "Nenhum registro selecionado!");
 			return;
 		}
+
+		long id = listView.getId(r);
+
+		Produto produto = dao.find(id);
 		
+		if (produto == null) {
+			JOptionPane.showMessageDialog(listView, "Registro não encontrado!");
+			return;
+		}
+
 		int resp = JOptionPane.showConfirmDialog(listView, "Confirma exclusão do registro?", listView.getTitle(), JOptionPane.YES_NO_OPTION);
 		
 		if (resp == JOptionPane.NO_OPTION) {
 			return;
 		}
+		
+		dao.delete(produto);
 
-		produtos.remove(r);
 		search(null);
 	}
 
@@ -81,22 +96,20 @@ public class ProdutoPresenter implements Presenter {
 	}
 
 	public void search(String search) {
+		List<Produto> produtos = dao.list();
+		
 		listView.setProdutos(produtos);
 	}
 
 	public void save(Produto produto) {
 		if (produto.getId() == 0L) {
-			produto.setId(new Long(produtos.size() + 1));
-			produtos.add(produto);
+			dao.create(produto);
 			formView.clear();
 		} else {
-			
-			int index = produtos.indexOf(produto);
-			produtos.set(index, produto);
+			dao.update(produto);
 			formView.dispose();
 		}
 
 		search(null);
-
 	}
 }
