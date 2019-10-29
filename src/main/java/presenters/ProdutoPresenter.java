@@ -1,6 +1,5 @@
 package presenters;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JOptionPane;
@@ -96,7 +95,7 @@ public class ProdutoPresenter implements Presenter {
 	}
 
 	public void search(String search) {
-		List<Produto> produtos = dao.list();
+		List<Produto> produtos = dao.list(search);
 		
 		listView.setProdutos(produtos);
 	}
