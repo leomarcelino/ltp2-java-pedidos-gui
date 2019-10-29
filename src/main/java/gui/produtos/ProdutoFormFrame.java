@@ -4,11 +4,13 @@ import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.NumberFormat;
+import java.text.ParseException;
 
 import javax.swing.JButton;
 import javax.swing.JFormattedTextField;
 import javax.swing.JInternalFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
@@ -156,11 +158,16 @@ public class ProdutoFormFrame extends JInternalFrame implements ActionListener {
 			produto.setId(new Long(idField.getText()));
 		}
 		
-		produto.setDescricao(descricaoField.getText());
-		produto.setPreco(Double.parseDouble(precoField.getText()));
-		produto.setEstoque(Double.parseDouble(estoqueField.getText()));
-		
-		presenter.save(produto);
+		try {
+			produto.setDescricao(descricaoField.getText());
+			produto.setPreco(precoFormat.parse(precoField.getText()).doubleValue());
+			produto.setEstoque(estoqueFormat.parse(estoqueField.getText()).doubleValue());
+			
+			presenter.save(produto);
+		} catch(ParseException e) {
+			JOptionPane.showMessageDialog(this, 
+					"Erro ao salvar registro", getTitle(), JOptionPane.ERROR_MESSAGE);
+		}
 	}
 
 	public void setBean(Produto produto) {
