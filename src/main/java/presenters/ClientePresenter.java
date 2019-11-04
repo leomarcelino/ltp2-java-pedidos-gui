@@ -5,9 +5,11 @@ import java.util.List;
 
 import javax.swing.JOptionPane;
 
+import dao.ClienteDAO;
 import gui.clientes.ClienteFormFrame;
 import gui.clientes.ClienteListFrame;
 import models.Cliente;
+import models.Produto;
 
 public class ClientePresenter implements Presenter {
 	
@@ -16,12 +18,12 @@ public class ClientePresenter implements Presenter {
 	private ClienteListFrame listView;
 	private ClienteFormFrame formView;
 	
-	List<Cliente> clientes = new ArrayList<>();
+	private ClienteDAO dao;
 
 	public ClientePresenter(AppPresenter appPresenter) {
 		this.appPresenter = appPresenter;
 		
-		clientes = new ArrayList<>();
+		this.dao = new ClienteDAO();
 		
 		initComponents();
 	}
@@ -42,31 +44,49 @@ public class ClientePresenter implements Presenter {
 
 	public void openFormOnEditMode() {
 		int r = listView.getSelectedRowIndex();
-		
-		if (r < 0 || r > clientes.size()) {
+
+		if (r < 0 || r > listView.getTableRowCount()) {
 			JOptionPane.showMessageDialog(listView, "Nenhum registro selecionado!");
 			return;
 		}
 
-		Cliente Cliente = clientes.get(r);
-		openForm(Cliente);
+		long id = listView.getId(r);
+
+		Cliente cliente = dao.find(id);
+		
+		if (cliente == null) {
+			JOptionPane.showMessageDialog(listView, "Registro não encontrado!");
+			return;
+		}
+		
+		openForm(cliente);
 	}
 
 	public void delete() {
 		int r = listView.getSelectedRowIndex();
 		
-		if (r < 0 || r > clientes.size()) {
+		if (r < 0 || r > listView.getTableRowCount()) {
 			JOptionPane.showMessageDialog(listView, "Nenhum registro selecionado!");
 			return;
 		}
+
+		long id = listView.getId(r);
+
+		Cliente cliente = dao.find(id);
 		
+		if (cliente == null) {
+			JOptionPane.showMessageDialog(listView, "Registro não encontrado!");
+			return;
+		}
+
 		int resp = JOptionPane.showConfirmDialog(listView, "Confirma exclusão do registro?", listView.getTitle(), JOptionPane.YES_NO_OPTION);
 		
 		if (resp == JOptionPane.NO_OPTION) {
 			return;
 		}
+		
+		dao.delete(cliente);
 
-		clientes.remove(r);
 		search(null);
 	}
 
@@ -77,22 +97,20 @@ public class ClientePresenter implements Presenter {
 	}
 
 	public void search(String search) {
+		List<Cliente> clientes = dao.list(search);
+		
 		listView.setClientes(clientes);
 	}
 
-	public void save(Cliente Cliente) {
-		if (Cliente.getId() == 0L) {
-			Cliente.setId(new Long(clientes.size() + 1));
-			clientes.add(Cliente);
+	public void save(Cliente cliente) {
+		if (cliente.getId() == 0L) {
+			dao.create(cliente);
 			formView.clear();
 		} else {
-			
-			int index = clientes.indexOf(Cliente);
-			clientes.set(index, Cliente);
+			dao.update(cliente);
 			formView.dispose();
 		}
 
 		search(null);
-
 	}
 }

@@ -206,4 +206,16 @@ public class ClienteListFrame extends JInternalFrame implements ActionListener {
 	public int getSelectedRowIndex() {
 		return table.getSelectedRow();
 	}
+
+	public int getTableRowCount() {
+		return table.getRowCount();
+	}
+
+	public long getId(int row) {
+		if (row > -1 && row < getTableRowCount()) {
+			return (Long)table.getValueAt(row, 0);
+		}
+		
+		return -1L;
+	}
 }
